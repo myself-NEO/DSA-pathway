@@ -17,7 +17,7 @@ public class DataSourceConfig {
         SQLServerDataSource dataSource = new SQLServerDataSource();
         dataSource.setServerName("dsapathway.database.windows.net");
         dataSource.setDatabaseName("dsapathway");
-//        dataSource.setAuthentication("ActiveDirectoryMSI"); // Enable MSI for Azure
+        dataSource.setAuthentication("ActiveDirectoryManagedIdentity"); // Enable MSI for Azure
 
         // Create TokenRequestContext with the required scope
         TokenRequestContext tokenRequestContext = new TokenRequestContext()
@@ -44,7 +44,7 @@ public class DataSourceConfig {
     }
 
     private boolean isRunningOnAzure() {
-        // Detects if running in Azure environment; adjust as needed for your setup
+        // Detects if running in Azure environment, on Azure apps, azure function etc
         return System.getenv("WEBSITE_INSTANCE_ID") != null;
     }
 
