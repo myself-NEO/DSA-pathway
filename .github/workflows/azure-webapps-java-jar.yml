@@ -36,6 +36,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      IS_RUNNING_ON_AZURE: true
+
     steps:
       - uses: actions/checkout@v4
 
