@@ -1,5 +1,6 @@
 package com.neo.dsapathway.config;
 
+import com.azure.core.credential.TokenCredential;
 import com.azure.core.credential.TokenRequestContext;
 import com.azure.identity.AzureCliCredentialBuilder;
 import com.azure.identity.DefaultAzureCredentialBuilder;
@@ -17,34 +18,26 @@ public class DataSourceConfig {
         SQLServerDataSource dataSource = new SQLServerDataSource();
         dataSource.setServerName("dsapathway.database.windows.net");
         dataSource.setDatabaseName("dsapathway");
-        dataSource.setAuthentication("ActiveDirectoryManagedIdentity"); // Enable MSI for Azure
 
-        // Create TokenRequestContext with the required scope
-        TokenRequestContext tokenRequestContext = new TokenRequestContext()
-                .setScopes(Collections.singletonList("https://database.windows.net/.default"));
-
-        // Conditional logic for token acquisition
-        String accessToken;
-        if (isRunningOnAzure()) {
-            // Fetch token via Managed Identity in Azure
-            accessToken = new DefaultAzureCredentialBuilder().build()
-                    .getToken(tokenRequestContext)
-                    .block()
-                    .getToken();
-        } else {
-            // Use Azure CLI to fetch token locally
-            accessToken = new AzureCliCredentialBuilder().build()
-                    .getToken(tokenRequestContext)
-                    .block()
-                    .getToken();
-        }
+        TokenCredential credential = getCredential();
+        String accessToken = credential.getToken(
+                new TokenRequestContext().setScopes(Collections.singletonList("https://database.windows.net/.default"))
+        ).block().getToken();
 
         dataSource.setAccessToken(accessToken);
         return dataSource;
     }
 
+    private TokenCredential getCredential() {
+        // Use DefaultAzureCredential if running in Azure, else AzureCliCredential for local
+        if (isRunningOnAzure()) {
+            return new DefaultAzureCredentialBuilder().build();
+        } else {
+            return new AzureCliCredentialBuilder().build();
+        }
+    }
+
     private boolean isRunningOnAzure() {
-        // Detects if running in Azure environment, on Azure apps, azure function etc
         return System.getenv("WEBSITE_INSTANCE_ID") != null;
     }
 
