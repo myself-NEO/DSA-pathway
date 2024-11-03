@@ -38,7 +38,8 @@ public class DataSourceConfig {
     }
 
     private boolean isRunningOnAzure() {
-        boolean runningOnAzure = System.getenv("WEBSITE_INSTANCE_ID") != null;
+        boolean runningOnAzure = System.getenv("WEBSITE_INSTANCE_ID") != null ||
+                "true".equalsIgnoreCase(System.getenv("IS_RUNNING_ON_AZURE"));
         System.out.println("Running on Azure: " + runningOnAzure);
         return runningOnAzure;
     }
