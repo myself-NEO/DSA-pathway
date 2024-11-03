@@ -14,19 +14,19 @@ public class DataSourceConfig {
 
     @Bean
     public DataSource dataSource() {
-        if(!isRunningOnAzure()) {
-            SQLServerDataSource dataSource = new SQLServerDataSource();
-            dataSource.setServerName("dsapathway.database.windows.net");
-            dataSource.setDatabaseName("dsapathway");
-
-            TokenCredential credential = getCredential();
-            String accessToken = credential.getToken(
-                    new TokenRequestContext().setScopes(Collections.singletonList("https://database.windows.net/.default"))
-            ).block().getToken();
-
-            dataSource.setAccessToken(accessToken);
-            return dataSource;
-        } else {
+//        if(!isRunningOnAzure()) {
+//            SQLServerDataSource dataSource = new SQLServerDataSource();
+//            dataSource.setServerName("dsapathway.database.windows.net");
+//            dataSource.setDatabaseName("dsapathway");
+//
+//            TokenCredential credential = getCredential();
+//            String accessToken = credential.getToken(
+//                    new TokenRequestContext().setScopes(Collections.singletonList("https://database.windows.net/.default"))
+//            ).block().getToken();
+//
+//            dataSource.setAccessToken(accessToken);
+//            return dataSource;
+//        } else {
             SQLServerDataSource dataSource = new SQLServerDataSource();
             dataSource.setServerName("dsapathway.database.windows.net");
             dataSource.setDatabaseName("dsapathway");
@@ -35,18 +35,18 @@ public class DataSourceConfig {
             dataSource.setAuthentication("ActiveDirectoryManagedIdentity");
 
             return dataSource;
-        }
+//        }
 
     }
 
-    private TokenCredential getCredential() {
-        return new AzureCliCredentialBuilder().build();
-    }
+//    private TokenCredential getCredential() {
+//        return new AzureCliCredentialBuilder().build();
+//    }
 
-    private boolean isRunningOnAzure() {
-        boolean runningOnAzure = System.getenv("WEBSITE_INSTANCE_ID") != null ||
-                "true".equalsIgnoreCase(System.getenv("IS_RUNNING_ON_AZURE"));
-        return runningOnAzure;
-    }
+//    private boolean isRunningOnAzure() {
+//        boolean runningOnAzure = System.getenv("WEBSITE_INSTANCE_ID") != null ||
+//                "true".equalsIgnoreCase(System.getenv("IS_RUNNING_ON_AZURE"));
+//        return runningOnAzure;
+//    }
 
 }
