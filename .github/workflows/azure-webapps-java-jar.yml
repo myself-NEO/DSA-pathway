@@ -39,6 +39,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
@@ -69,11 +74,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: java-app
-
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
